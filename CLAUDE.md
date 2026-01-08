@@ -22,6 +22,8 @@ Behavioral rules for Claude Code in this repository.
 
 **OpenAPI workflow:** Schemas stored in `schemas/<api-name>/`. Generation via `cargo run -p liana-codegen`. Generated code is a build artifact, not checked into git.
 
+**Multi-language:** Codegen targets multiple languages (Rust, TypeScript, Python, etc.). Consumers use native bindings without needing Rust/cargo. Schemas are the universal source of truth.
+
 ## Core Rule
 
 **Note things down immediately:**
