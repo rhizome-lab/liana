@@ -1,0 +1,72 @@
+# CLAUDE.md
+
+Behavioral rules for Claude Code in this repository.
+
+## Architecture
+
+**Branch structure:**
+- `master` - core infrastructure only
+- `bindings` - merges master + adds API bindings
+
+**Directory structure (master):**
+- `crates/` - core infrastructure (`liana-core`, `liana-http`, `liana-codegen`)
+- `schemas/` - OpenAPI specs (fetched, not generated code)
+
+**Directory structure (bindings branch adds):**
+- `bindings/` - API bindings (`web-*`, `openapi-*`, `ffi-*`)
+
+**Binding categories:**
+- `web-*`: Browser/Web API bindings
+- `openapi-*`: Generated from OpenAPI schemas
+- `ffi-*`: Foreign function interface bindings
+
+**OpenAPI workflow:** Schemas stored in `schemas/<api-name>/`. Generation via `cargo run -p liana-codegen`. Generated code is a build artifact, not checked into git.
+
+## Core Rule
+
+**Note things down immediately:**
+- Bugs/issues → fix or add to TODO.md
+- Design decisions → docs/ or code comments
+- Future work → TODO.md
+- Key insights → this file
+
+**Triggers:** User corrects you, 2+ failed attempts, "aha" moment, framework quirk discovered → document before proceeding.
+
+**Don't say these (edit first):** "Fair point", "Should have", "That should go in X" → edit the file BEFORE responding.
+
+**Do the work properly.** When asked to analyze X, actually read X - don't synthesize from conversation.
+
+**If citing CLAUDE.md after failing:** The file failed its purpose. Adjust it to actually prevent the failure.
+
+## Negative Constraints
+
+Do not:
+- Announce actions ("I will now...") - just do them
+- Leave work uncommitted
+- Create special cases - design to avoid them
+- Create legacy APIs - one API, update all callers
+- Do half measures - migrate ALL callers when adding abstraction
+- Ask permission when philosophy is clear - just do it
+- Return tuples - use structs with named fields
+- Use trait default implementations - explicit impl required
+- Replace content when editing lists - extend, don't replace
+- Cut corners with fallbacks - implement properly for each case
+- Mark as done prematurely - note what remains
+- Fear "over-modularization" - 100 lines is fine for a module
+- Consider time constraints - optimize for correctness
+
+## Design Principles
+
+**Backend agnostic:** Bindings should work with any async runtime (tokio, async-std, smol) and HTTP client. Use traits for abstraction. Feature flags for optional backends.
+
+**Edition 2024:** Use Rust edition 2024 features. Embrace new patterns (e.g., async closures, gen blocks where applicable).
+
+**Type safety over convenience:** Prefer strongly-typed APIs. Use newtypes for IDs, enums for finite sets. Avoid stringly-typed interfaces.
+
+**Unify, don't multiply.** One interface for multiple cases > separate interfaces. Plugin systems > hardcoded switches.
+
+**Simplicity over cleverness.** HashMap > inventory crate. OnceLock > lazy_static. Functions > traits until you need the trait.
+
+**Explicit over implicit.** Log when skipping. Show what's at stake before refusing.
+
+**When stuck (2+ attempts):** Step back. Am I solving the right problem?
