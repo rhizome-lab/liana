@@ -9,11 +9,17 @@
 ## Pending
 
 ### Implementation (in order)
-- [ ] `liana-core`: IR types (Type, TypeKind, Annotation, Module, etc.)
-- [ ] `liana-codegen`: CLI skeleton
-- [ ] OpenAPI parser → IR
-- [ ] Rust generator (IR → Rust code)
-- [ ] Dogfood: generate bindings for a real API
+- [x] `liana-core`: IR types (Type, TypeKind, Annotation, Module, etc.)
+- [x] `liana-codegen`: CLI skeleton
+- [x] OpenAPI parser → IR
+- [x] Rust generator (IR → Rust code)
+- [x] Dogfood: generate bindings for petstore schema
+
+### Known Issues (MVP)
+- [ ] Array types missing element type in generated code (`Vec` instead of `Vec<Pet>`)
+- [ ] `ApiError` type not defined (needs runtime crate or configurable error type)
+- [ ] String enums not handled (OpenAPI enum → Rust enum)
+- [ ] No imports/use statements in generated code
 
 ### Then
 - [ ] Multi-language codegen targets (TypeScript, Python, etc.)

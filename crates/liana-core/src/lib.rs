@@ -35,7 +35,7 @@ pub struct Type {
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum TypeKind {
     /// Reference to a named type.
-    Ref(String),
+    Ref { name: String },
     /// Product type with fields.
     Struct { fields: Vec<Field> },
     /// Sum type with variants.
@@ -213,7 +213,7 @@ impl Type {
     /// Create a reference to a named type.
     pub fn reference(name: impl Into<String>) -> Self {
         Self {
-            kind: TypeKind::Ref(name.into()),
+            kind: TypeKind::Ref { name: name.into() },
             name: None,
             params: Vec::new(),
             args: Vec::new(),
@@ -225,7 +225,7 @@ impl Type {
     /// Create a generic instantiation: `base<args>`.
     pub fn generic(base: impl Into<String>, args: Vec<Type>) -> Self {
         Self {
-            kind: TypeKind::Ref(base.into()),
+            kind: TypeKind::Ref { name: base.into() },
             name: None,
             params: Vec::new(),
             args,
