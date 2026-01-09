@@ -4,10 +4,10 @@ use std::fs;
 use std::path::Path;
 
 use anyhow::{Context, Result};
+use openapiv3::{OpenAPI, ReferenceOr, Schema, SchemaKind, StringType, Type as OaType};
 use rhizome_liana_core::{
     Annotation, Field, Function, Item, Metadata, Module, Param, Type, TypeKind, Variant,
 };
-use openapiv3::{OpenAPI, ReferenceOr, Schema, SchemaKind, StringType, Type as OaType};
 
 /// Parse an `OpenAPI` schema file into IR.
 pub fn parse(path: &Path) -> Result<Module> {
