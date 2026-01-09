@@ -8,10 +8,17 @@
 
 ## Pending
 
-- [ ] Stabilize core (`liana-core`, `liana-http`, `liana-codegen`)
-- [ ] Multi-language codegen targets (Rust first, then TypeScript, Python, etc.)
+### Implementation (in order)
+- [ ] `liana-core`: IR types (Type, TypeKind, Annotation, Module, etc.)
+- [ ] `liana-codegen`: CLI skeleton
+- [ ] OpenAPI parser → IR
+- [ ] Rust generator (IR → Rust code)
+- [ ] Dogfood: generate bindings for a real API
+
+### Then
+- [ ] Multi-language codegen targets (TypeScript, Python, etc.)
 - [ ] Fast-forward bindings branch to stable core
-- [ ] Add first binding to dogfood the core
+- [ ] Add first binding to bindings branch
 
 ## Future Ideas
 

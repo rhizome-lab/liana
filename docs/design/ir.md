@@ -250,9 +250,18 @@ struct Metadata {
 }
 ```
 
+## Decisions
+
+- **Interning**: Yes - types should be interned for deduplication and fast comparison.
+
 ## Open Questions
 
 - **Validation layer**: When/how to validate annotation kinds and values?
-- **Interning**: Should types be interned for deduplication and fast comparison?
 - **Versioning**: How to handle API versions in IR?
 - **Streaming**: How to represent streaming responses / async generators?
+
+## Deferred
+
+- **Specialcases format**: Design when we hit real pain points
+- **Confidence scoring**: Design when we hit ambiguous cases in parsing
+- **C preprocessor strategy**: Defer until FFI parser implementation
