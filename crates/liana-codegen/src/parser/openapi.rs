@@ -4,7 +4,7 @@ use std::fs;
 use std::path::Path;
 
 use anyhow::{Context, Result};
-use liana_core::{
+use rhizome_liana_core::{
     Annotation, Field, Function, Item, Metadata, Module, Param, Type, TypeKind, Variant,
 };
 use openapiv3::{OpenAPI, ReferenceOr, Schema, SchemaKind, StringType, Type as OaType};

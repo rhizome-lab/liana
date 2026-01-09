@@ -5,7 +5,7 @@ use std::fs;
 use std::path::Path;
 
 use anyhow::{Context, Result};
-use liana_core::{Field, Function, Item, Module, Type, TypeKind};
+use rhizome_rhizome_liana_core::{Field, Function, Item, Module, Type, TypeKind};
 
 /// Generate Rust code from IR.
 pub fn generate(module: &Module, output: &Path) -> Result<()> {
@@ -125,7 +125,7 @@ fn generate_type(out: &mut String, typ: &Type) -> Result<()> {
 fn generate_struct(
     out: &mut String,
     name: &str,
-    params: &[liana_core::TypeParam],
+    params: &[rhizome_liana_core::TypeParam],
     fields: &[Field],
 ) -> Result<()> {
     writeln!(
@@ -176,8 +176,8 @@ fn generate_struct(
 fn generate_enum(
     out: &mut String,
     name: &str,
-    params: &[liana_core::TypeParam],
-    variants: &[liana_core::Variant],
+    params: &[rhizome_rhizome_liana_core::TypeParam],
+    variants: &[rhizome_rhizome_liana_core::Variant],
 ) -> Result<()> {
     writeln!(
         out,
@@ -199,7 +199,7 @@ fn generate_enum(
         let rename = variant.annotations.iter().find_map(|a| {
             if a.kind == "serde_rename" {
                 match &a.value {
-                    Some(liana_core::AnnotationValue::String(s)) => Some(s.as_str()),
+                    Some(rhizome_rhizome_liana_core::AnnotationValue::String(s)) => Some(s.as_str()),
                     _ => None,
                 }
             } else {
@@ -254,7 +254,7 @@ fn generate_function(out: &mut String, func: &Function) -> Result<()> {
         .iter()
         .find(|a| a.kind == "http_method")
         .and_then(|a| match &a.value {
-            Some(liana_core::AnnotationValue::String(s)) => Some(s.as_str()),
+            Some(rhizome_liana_core::AnnotationValue::String(s)) => Some(s.as_str()),
             _ => None,
         });
     let path = func
@@ -262,7 +262,7 @@ fn generate_function(out: &mut String, func: &Function) -> Result<()> {
         .iter()
         .find(|a| a.kind == "http_path")
         .and_then(|a| match &a.value {
-            Some(liana_core::AnnotationValue::String(s)) => Some(s.as_str()),
+            Some(rhizome_liana_core::AnnotationValue::String(s)) => Some(s.as_str()),
             _ => None,
         });
 

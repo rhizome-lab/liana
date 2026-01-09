@@ -1,5 +1,5 @@
 [package]
-name = "liana-codegen"
+name = "rhizome-liana-codegen"
 version = "0.1.0"
 edition.workspace = true
 license.workspace = true
@@ -14,7 +14,7 @@ path = "src/main.rs"
 workspace = true
 
 [dependencies]
-liana-core = { path = "../liana-core" }
+rhizome-liana-core = { path = "../liana-core" }
 clap = { version = "4", features = ["derive"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
