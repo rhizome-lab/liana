@@ -9,6 +9,7 @@ export default withMermaid(
       nav: [
         { text: "Guide", link: "/guide/" },
         { text: "API Reference", link: "/api/" },
+        { text: "Rhizome", link: "https://rhizome-lab.github.io/" },
       ],
       sidebar: {
         "/guide/": [
@@ -29,7 +30,7 @@ export default withMermaid(
           },
         ],
       },
-      socialLinks: [{ icon: "github", link: "https://github.com/user/liana" }],
+      socialLinks: [{ icon: "github", link: "https://github.com/rhizome-lab/liana" }],
     },
   })
 );
