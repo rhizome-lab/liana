@@ -16,10 +16,15 @@
 - [x] Dogfood: generate bindings for petstore schema
 
 ### Known Issues (MVP)
-- [ ] Array types missing element type in generated code (`Vec` instead of `Vec<Pet>`)
-- [ ] `ApiError` type not defined (needs runtime crate or configurable error type)
-- [ ] String enums not handled (OpenAPI enum → Rust enum)
-- [ ] No imports/use statements in generated code
+- [x] Array types missing element type in generated code (`Vec` instead of `Vec<Pet>`)
+- [x] `ApiError` type not defined (generates basic ApiError struct)
+- [x] String enums not handled (OpenAPI enum → Rust enum with serde rename)
+- [x] No imports/use statements in generated code
+
+### Remaining Issues
+- [ ] Inline/anonymous enums fall back to String (only named schemas become enums)
+- [ ] Integer enums not handled
+- [ ] Additional response types (201, etc) not used for return type
 
 ### Then
 - [ ] Multi-language codegen targets (TypeScript, Python, etc.)

@@ -19,6 +19,20 @@ pub fn generate(module: &Module, output: &Path) -> Result<()> {
         writeln!(code)?;
     }
 
+    // Preamble
+    writeln!(code, "use serde::{{Deserialize, Serialize}};")?;
+    writeln!(code)?;
+    writeln!(code, "/// API error type.")?;
+    writeln!(
+        code,
+        "#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]"
+    )?;
+    writeln!(code, "pub struct ApiError {{")?;
+    writeln!(code, "    pub message: String,")?;
+    writeln!(code, "    pub code: Option<String>,")?;
+    writeln!(code, "}}")?;
+    writeln!(code)?;
+
     // Generate items
     for item in &module.items {
         match item {
@@ -63,7 +77,7 @@ fn generate_type(out: &mut String, typ: &Type) -> Result<()> {
             // Generate as enum with variants for each member
             writeln!(
                 out,
-                "#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]"
+                "#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]"
             )?;
             writeln!(out, "#[serde(untagged)]")?;
             writeln!(out, "pub enum {name} {{")?;
@@ -116,7 +130,7 @@ fn generate_struct(
 ) -> Result<()> {
     writeln!(
         out,
-        "#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]"
+        "#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]"
     )?;
 
     let generics = if params.is_empty() {
@@ -167,7 +181,7 @@ fn generate_enum(
 ) -> Result<()> {
     writeln!(
         out,
-        "#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]"
+        "#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]"
     )?;
 
     let generics = if params.is_empty() {
@@ -181,7 +195,24 @@ fn generate_enum(
     for variant in variants {
         let variant_name = to_pascal_case(&variant.name);
 
+        // Check for serde_rename annotation
+        let rename = variant.annotations.iter().find_map(|a| {
+            if a.kind == "serde_rename" {
+                match &a.value {
+                    Some(liana_core::AnnotationValue::String(s)) => Some(s.as_str()),
+                    _ => None,
+                }
+            } else {
+                None
+            }
+        });
+
         if variant.fields.is_empty() {
+            if let Some(original) = rename
+                && original != variant_name
+            {
+                writeln!(out, "    #[serde(rename = \"{original}\")]")?;
+            }
             writeln!(out, "    {variant_name},")?;
         } else if variant.fields.iter().all(|f| f.name.is_none()) {
             // Tuple variant
@@ -300,10 +331,10 @@ fn type_to_rust(typ: &Type) -> String {
                 .clone()
                 .unwrap_or_else(|| "AnonymousStruct".to_string())
         }
-        TypeKind::Enum { .. } => typ
-            .name
-            .clone()
-            .unwrap_or_else(|| "AnonymousEnum".to_string()),
+        TypeKind::Enum { .. } => {
+            // Named enums use the type name, anonymous enums fall back to String
+            typ.name.clone().unwrap_or_else(|| "String".to_string())
+        }
         TypeKind::Function { params, ret } => {
             let params_str: Vec<_> = params.iter().map(|p| type_to_rust(&p.typ)).collect();
             let ret_str = type_to_rust(ret);

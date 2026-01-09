@@ -83,11 +83,13 @@ components:
         tag:
           type: string
         status:
-          type: string
-          enum:
-            - available
-            - pending
-            - sold
+          $ref: '#/components/schemas/PetStatus'
+    PetStatus:
+      type: string
+      enum:
+        - available
+        - pending
+        - sold
     NewPet:
       type: object
       required:

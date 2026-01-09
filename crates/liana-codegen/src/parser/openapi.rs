@@ -4,7 +4,9 @@ use std::fs;
 use std::path::Path;
 
 use anyhow::{Context, Result};
-use liana_core::{Annotation, Field, Function, Item, Metadata, Module, Param, Type, TypeKind};
+use liana_core::{
+    Annotation, Field, Function, Item, Metadata, Module, Param, Type, TypeKind, Variant,
+};
 use openapiv3::{OpenAPI, ReferenceOr, Schema, SchemaKind, StringType, Type as OaType};
 
 /// Parse an `OpenAPI` schema file into IR.
@@ -67,42 +69,49 @@ impl<'a> Converter<'a> {
         })
     }
 
+    #[allow(clippy::unnecessary_wraps)]
     fn convert_schema(&self, schema: &Schema, name: Option<String>) -> Result<Type> {
-        let kind = match &schema.schema_kind {
-            SchemaKind::Type(typ) => self.convert_schema_type(typ)?,
+        let (kind, args) = match &schema.schema_kind {
+            SchemaKind::Type(typ) => self.convert_schema_type(typ),
             SchemaKind::OneOf { one_of } => {
                 let members = one_of
                     .iter()
                     .filter_map(|r| self.resolve_schema_ref(r).ok())
                     .collect();
-                TypeKind::Union { members }
+                (TypeKind::Union { members }, Vec::new())
             }
             SchemaKind::AllOf { all_of } => {
                 let members = all_of
                     .iter()
                     .filter_map(|r| self.resolve_schema_ref(r).ok())
                     .collect();
-                TypeKind::Intersection { members }
+                (TypeKind::Intersection { members }, Vec::new())
             }
             SchemaKind::AnyOf { any_of } => {
                 let members = any_of
                     .iter()
                     .filter_map(|r| self.resolve_schema_ref(r).ok())
                     .collect();
-                TypeKind::Union { members }
+                (TypeKind::Union { members }, Vec::new())
             }
             SchemaKind::Not { .. } => {
                 // Not types are tricky, just use Any for now
-                TypeKind::Ref {
-                    name: "Any".to_string(),
-                }
+                (
+                    TypeKind::Ref {
+                        name: "Any".to_string(),
+                    },
+                    Vec::new(),
+                )
             }
             SchemaKind::Any(any) => {
                 // Try to infer from properties
                 if any.properties.is_empty() {
-                    TypeKind::Ref {
-                        name: "Any".to_string(),
-                    }
+                    (
+                        TypeKind::Ref {
+                            name: "Any".to_string(),
+                        },
+                        Vec::new(),
+                    )
                 } else {
                     let fields = any
                         .properties
@@ -124,7 +133,7 @@ impl<'a> Converter<'a> {
                             }
                         })
                         .collect();
-                    TypeKind::Struct { fields }
+                    (TypeKind::Struct { fields }, Vec::new())
                 }
             }
         };
@@ -147,7 +156,7 @@ impl<'a> Converter<'a> {
             kind,
             name,
             params: Vec::new(),
-            args: Vec::new(),
+            args,
             annotations,
             metadata: Metadata {
                 docs: schema.schema_data.description.clone(),
@@ -156,20 +165,49 @@ impl<'a> Converter<'a> {
         })
     }
 
-    fn convert_schema_type(&self, typ: &OaType) -> Result<TypeKind> {
-        Ok(match typ {
-            OaType::String(_) => TypeKind::Ref {
-                name: "String".to_string(),
-            },
-            OaType::Number(_) => TypeKind::Ref {
-                name: "f64".to_string(),
-            },
-            OaType::Integer(_) => TypeKind::Ref {
-                name: "i64".to_string(),
-            },
-            OaType::Boolean(_) => TypeKind::Ref {
-                name: "bool".to_string(),
-            },
+    fn convert_schema_type(&self, typ: &OaType) -> (TypeKind, Vec<Type>) {
+        match typ {
+            OaType::String(s) => {
+                if s.enumeration.is_empty() {
+                    (
+                        TypeKind::Ref {
+                            name: "String".to_string(),
+                        },
+                        Vec::new(),
+                    )
+                } else {
+                    // Generate enum variants from string values
+                    let variants = s
+                        .enumeration
+                        .iter()
+                        .filter_map(|v| v.as_ref())
+                        .map(|v| Variant {
+                            name: to_pascal_case(v),
+                            fields: Vec::new(),
+                            annotations: vec![Annotation::with_string("serde_rename", v.clone())],
+                        })
+                        .collect();
+                    (TypeKind::Enum { variants }, Vec::new())
+                }
+            }
+            OaType::Number(_) => (
+                TypeKind::Ref {
+                    name: "f64".to_string(),
+                },
+                Vec::new(),
+            ),
+            OaType::Integer(_) => (
+                TypeKind::Ref {
+                    name: "i64".to_string(),
+                },
+                Vec::new(),
+            ),
+            OaType::Boolean(_) => (
+                TypeKind::Ref {
+                    name: "bool".to_string(),
+                },
+                Vec::new(),
+            ),
             OaType::Object(obj) => {
                 let fields = obj
                     .properties
@@ -191,7 +229,7 @@ impl<'a> Converter<'a> {
                         }
                     })
                     .collect();
-                TypeKind::Struct { fields }
+                (TypeKind::Struct { fields }, Vec::new())
             }
             OaType::Array(arr) => {
                 let item_type = arr
@@ -199,14 +237,14 @@ impl<'a> Converter<'a> {
                     .as_ref()
                     .and_then(|r| self.resolve_boxed_schema_ref(r).ok())
                     .unwrap_or_else(|| Type::reference("Any"));
-                // Return as a Ref with args, the Type wrapper will handle it
-                // TODO: properly pass item_type as generic arg
-                let _ = item_type;
-                return Ok(TypeKind::Ref {
-                    name: "Vec".to_string(),
-                });
+                (
+                    TypeKind::Ref {
+                        name: "Vec".to_string(),
+                    },
+                    vec![item_type],
+                )
             }
-        })
+        }
     }
 
     fn resolve_schema_ref(&self, schema_ref: &ReferenceOr<Schema>) -> Result<Type> {
@@ -360,4 +398,22 @@ fn to_module_name(title: &str) -> String {
         .replace(|c: char| !c.is_alphanumeric(), "_")
         .trim_matches('_')
         .to_string()
+}
+
+fn to_pascal_case(s: &str) -> String {
+    let mut result = String::new();
+    let mut capitalize_next = true;
+
+    for c in s.chars() {
+        if c == '_' || c == '-' || c == ' ' {
+            capitalize_next = true;
+        } else if capitalize_next {
+            result.push(c.to_uppercase().next().unwrap());
+            capitalize_next = false;
+        } else {
+            result.push(c);
+        }
+    }
+
+    result
 }
