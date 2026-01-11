@@ -31,6 +31,9 @@
 - [ ] Fast-forward bindings branch to stable core
 - [ ] Add first binding to bindings branch
 
+## Complexity Hotspots (threshold >21)
+- [ ] `crates/liana-codegen/src/generator/rust.rs:to_snake_case` (34)
+
 ## Future Ideas
 
 - Web APIs: fetch, WebSocket, etc.
