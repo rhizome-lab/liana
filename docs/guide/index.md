@@ -1,6 +1,6 @@
 # Introduction
 
-liana provides type-safe bindings to various APIs in Rust:
+concord provides type-safe bindings to various APIs in Rust:
 
 - **Web APIs** - Browser and web platform APIs
 - **OpenAPI** - Generated clients from OpenAPI/Swagger schemas
@@ -22,9 +22,9 @@ liana provides type-safe bindings to various APIs in Rust:
 **master branch:**
 ```
 crates/                # Core infrastructure
-├── liana-core/        # Shared utilities
-├── liana-http/        # HTTP client trait
-└── liana-codegen/     # OpenAPI code generator
+├── concord-core/        # Shared utilities
+├── concord-http/        # HTTP client trait
+└── concord-codegen/     # OpenAPI code generator
 
 schemas/               # OpenAPI specs (source of truth)
 ```

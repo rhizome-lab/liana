@@ -188,20 +188,20 @@ dependencies = [
 ]
 
 [[package]]
-name = "rhizome-liana-codegen"
+name = "rhi-concord-codegen"
 version = "0.1.0"
 dependencies = [
  "anyhow",
  "clap",
  "openapiv3",
- "rhizome-liana-core",
+ "rhi-concord-core",
  "serde",
  "serde_json",
  "serde_yaml",
 ]
 
 [[package]]
-name = "rhizome-liana-core"
+name = "rhi-concord-core"
 version = "0.1.0"
 dependencies = [
  "indexmap",

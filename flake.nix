@@ -1,5 +1,5 @@
 {
-  description = "liana - type-safe API bindings for Rust";
+  description = "concord - type-safe API bindings for Rust";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -13,7 +13,7 @@
       in
       {
         packages.default = pkgs.rustPlatform.buildRustPackage {
-          pname = "liana";
+          pname = "concord";
           version = "0.1.0";
           src = ./.;
           cargoLock.lockFile = ./Cargo.lock;

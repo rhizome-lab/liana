@@ -1,7 +1,7 @@
 ---
 layout: home
 hero:
-  name: liana
+  name: concord
   tagline: Type-safe API bindings for Rust
   actions:
     - theme: brand
@@ -9,7 +9,7 @@ hero:
       link: /guide/
     - theme: alt
       text: View on GitHub
-      link: https://github.com/user/liana
+      link: https://github.com/rhi-zone/concord
 features:
   - title: Web APIs
     details: Type-safe bindings to browser and web platform APIs

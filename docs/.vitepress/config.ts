@@ -3,13 +3,13 @@ import { withMermaid } from "vitepress-plugin-mermaid";
 
 export default withMermaid(
   defineConfig({
-    title: "liana",
+    title: "concord",
     description: "Type-safe API bindings for Rust",
     themeConfig: {
       nav: [
         { text: "Guide", link: "/guide/" },
         { text: "API Reference", link: "/api/" },
-        { text: "Rhizome", link: "https://rhizome-lab.github.io/" },
+        { text: "RHI", link: "https://rhi.zone/" },
       ],
       sidebar: {
         "/guide/": [
@@ -30,7 +30,7 @@ export default withMermaid(
           },
         ],
       },
-      socialLinks: [{ icon: "github", link: "https://github.com/rhizome-lab/liana" }],
+      socialLinks: [{ icon: "github", link: "https://github.com/rhi-zone/concord" }],
     },
   })
 );

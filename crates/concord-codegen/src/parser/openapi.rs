@@ -5,7 +5,7 @@ use std::path::Path;
 
 use anyhow::{Context, Result};
 use openapiv3::{OpenAPI, ReferenceOr, Schema, SchemaKind, StringType, Type as OaType};
-use rhizome_liana_core::{
+use rhi_concord_core::{
     Annotation, Field, Function, Item, Metadata, Module, Param, Type, TypeKind, Variant,
 };
 

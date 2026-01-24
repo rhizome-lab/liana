@@ -1,10 +1,10 @@
 [package]
-name = "rhizome-liana-core"
+name = "rhi-concord-core"
 version = "0.1.0"
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
-description = "Core IR types for liana API bindings"
+description = "Core IR types for concord API bindings"
 
 [lints]
 workspace = true

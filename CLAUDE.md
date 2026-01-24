@@ -9,7 +9,7 @@ Behavioral rules for Claude Code in this repository.
 - `bindings` - merges master + adds API bindings
 
 **Directory structure (master):**
-- `crates/` - core infrastructure (`liana-core`, `liana-http`, `liana-codegen`)
+- `crates/` - core infrastructure (`concord-core`, `concord-http`, `concord-codegen`)
 - `schemas/` - OpenAPI specs (fetched, not generated code)
 
 **Directory structure (bindings branch adds):**
@@ -20,7 +20,7 @@ Behavioral rules for Claude Code in this repository.
 - `openapi-*`: Generated from OpenAPI schemas
 - `ffi-*`: Foreign function interface bindings
 
-**OpenAPI workflow:** Schemas stored in `schemas/<api-name>/`. Generation via `cargo run -p liana-codegen`. Generated code is a build artifact, not checked into git.
+**OpenAPI workflow:** Schemas stored in `schemas/<api-name>/`. Generation via `cargo run -p rhi-concord-codegen`. Generated code is a build artifact, not checked into git.
 
 **Multi-language:** Codegen targets multiple languages (Rust, TypeScript, Python, etc.). Consumers use native bindings without needing Rust/cargo. Schemas are the universal source of truth.
 
