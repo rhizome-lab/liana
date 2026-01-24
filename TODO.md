@@ -2,15 +2,15 @@
 
 ## Workflow
 
-- `bindings` branch exists as worktree (`~/git/liana-bindings`)
+- `bindings` branch exists as worktree (`~/git/concord-bindings`)
 - Stabilize core first, then fast-forward bindings to master and add APIs
 - Avoid constant rebasing - core should be solid before bindings build on it
 
 ## Pending
 
 ### Implementation (in order)
-- [x] `liana-core`: IR types (Type, TypeKind, Annotation, Module, etc.)
-- [x] `liana-codegen`: CLI skeleton
+- [x] `concord-core`: IR types (Type, TypeKind, Annotation, Module, etc.)
+- [x] `concord-codegen`: CLI skeleton
 - [x] OpenAPI parser → IR
 - [x] Rust generator (IR → Rust code)
 - [x] Dogfood: generate bindings for petstore schema
@@ -32,7 +32,7 @@
 - [ ] Add first binding to bindings branch
 
 ## Complexity Hotspots (threshold >21)
-- [ ] `crates/liana-codegen/src/generator/rust.rs:to_snake_case` (34)
+- [ ] `crates/concord-codegen/src/generator/rust.rs:to_snake_case` (34)
 
 ## Future Ideas
 
