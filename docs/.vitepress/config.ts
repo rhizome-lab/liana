@@ -5,6 +5,7 @@ export default withMermaid(
   defineConfig({
     title: "concord",
     description: "Type-safe API bindings for Rust",
+    base: "/concord/",
     themeConfig: {
       nav: [
         { text: "Guide", link: "/guide/" },
